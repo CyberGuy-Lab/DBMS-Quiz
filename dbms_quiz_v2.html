@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DBMS Quiz — University Standard · AAMUSTED</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Code+Pro:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#07121a;color:#ddeaf0;font-family:'Lato',sans-serif;min-height:100vh;}
+.screen{display:none;max-width:720px;margin:0 auto;padding:52px 20px 88px;}
+.screen.active{display:block;animation:fi .3s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes su{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.slide{animation:su .38s cubic-bezier(.16,1,.3,1);}
+.mono{font-family:'Source Code Pro',monospace;}
+.serif{font-family:'Playfair Display',serif;}
+.label{font-family:'Source Code Pro',monospace;font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;}
+.chip{display:inline-block;padding:3px 12px;border-radius:20px;font-family:'Source Code Pro',monospace;font-size:.67rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;}
+.pbar{height:4px;background:#11202c;border-radius:4px;overflow:hidden;margin-bottom:26px;}
+.pfill{height:100%;border-radius:4px;transition:width .5s ease;}
+.btn{cursor:pointer;border:none;border-radius:10px;font-family:'Lato',sans-serif;font-weight:700;font-size:.97rem;padding:13px;width:100%;transition:transform .18s,filter .18s;display:block;margin-bottom:10px;}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.1);}
+.btn-primary{background:#00e5ff;color:#07121a;}
+.btn-danger{background:#ff6b35;color:#07121a;}
+.btn-outline{background:transparent;border:1.5px solid #1a2c38;color:#6a9aaa;}
+.btn-green{background:transparent;border:1.5px solid #a8ff3e44;color:#a8ff3e;}
+.btn-purple{background:#9c27b0;color:#fff;}
+.btn-back{background:transparent;border:1px solid #192c38;color:#3a6a7a;font-family:'Source Code Pro',monospace;font-size:.72rem;padding:6px 13px;width:auto;border-radius:8px;cursor:pointer;transition:all .2s;}
+.topic-card{display:flex;justify-content:space-between;align-items:center;background:#0b1c27;border:1.5px solid rgba(255,255,255,.09);border-radius:11px;padding:15px 20px;cursor:pointer;transition:transform .15s,border-color .15s;margin-bottom:10px;width:100%;text-align:left;}
+.topic-card:hover{transform:translateX(4px);}
+.topic-card .tc-name{font-weight:700;font-size:.91rem;color:#ddeaf0;}
+.topic-card .tc-count{font-family:'Source Code Pro',monospace;font-size:.78rem;white-space:nowrap;margin-left:12px;}
+.opt{background:#0b1c27;border:1.5px solid #192c38;border-radius:10px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s;margin-bottom:9px;}
+.opt:hover:not(.locked){transform:translateX(5px);}
+.opt .key{font-family:'Source Code Pro',monospace;font-size:.73rem;opacity:.5;padding-top:2px;min-width:18px;}
+.opt .txt{font-size:.94rem;line-height:1.46;flex:1;}
+.opt .icon{font-size:1rem;margin-left:auto;padding-top:2px;}
+.explain{border-radius:11px;padding:15px 18px;margin:2px 0 2px;}
+.explain .ex-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:10px;}
+.explain .ex-title{font-family:'Source Code Pro',monospace;font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.explain .correct-ans{font-size:.82rem;margin-top:3px;color:#a8ff3e;}
+.explain p{font-size:.9rem;line-height:1.82;border-left:3px solid;padding-left:13px;color:#b0cad5;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.counter{font-family:'Source Code Pro',monospace;font-size:.72rem;color:#3a6a7a;}
+.section-title{font-family:'Source Code Pro',monospace;font-size:.67rem;color:#3a6a7a;letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;}
+.stat-card{background:#0b1c27;border-radius:10px;padding:14px 18px;margin-bottom:10px;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.improve-box{background:#0c1520;border:1.5px solid rgba(255,107,53,.18);border-radius:12px;padding:20px 22px;margin-bottom:26px;}
+.improve-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #192c38;}
+.improve-item:last-child{margin:0;padding:0;border:none;}
+.improve-tip{font-size:.86rem;line-height:1.78;color:#7a9aaa;border-left:3px solid rgba(255,107,53,.3);padding-left:12px;margin-top:6px;}
+.strong-box{background:#09180f;border:1.5px solid rgba(168,255,62,.16);border-radius:12px;padding:18px 22px;margin-bottom:26px;}
+.strong-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #111e0f;font-size:.87rem;}
+.strong-row:last-child{border:none;}
+.missed-item{background:#0b1c27;border:1.5px solid #192c38;border-radius:10px;margin-bottom:9px;overflow:hidden;}
+.missed-body{padding:4px 18px 18px;border-top:1px solid #192c38;}
+.missed-explain{font-size:.87rem;line-height:1.8;color:#8aaabb;border-left:3px solid;padding-left:13px;margin-top:8px;}
+.score-big{font-family:'Playfair Display',serif;font-size:clamp(5rem,18vw,8.5rem);font-weight:900;line-height:1;text-align:center;}
+.perfect{text-align:center;background:#09180f;border:1.5px solid rgba(168,255,62,.26);border-radius:12px;padding:22px;margin-bottom:28px;}
+
+/* ── PRACTICAL QUESTIONS ── */
+.practical-screen{background:#0b1c27;border:1.5px solid #1a3040;border-radius:14px;padding:24px 22px;margin-bottom:22px;}
+.practical-num{font-family:'Source Code Pro',monospace;font-size:.67rem;color:#e040fb;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px;}
+.practical-q{font-family:'Playfair Display',serif;font-size:1.15rem;line-height:1.65;color:#fff;font-weight:700;margin-bottom:16px;}
+.scenario-box{background:#07121a;border:1px solid #1a3040;border-radius:8px;padding:14px 16px;font-size:.89rem;line-height:1.75;color:#9abac8;margin-bottom:16px;}
+.reveal-btn{cursor:pointer;border:none;background:#e040fb;color:#fff;font-family:'Lato',sans-serif;font-weight:700;font-size:.9rem;padding:11px 22px;border-radius:9px;transition:all .2s;display:inline-block;}
+.reveal-btn:hover{transform:translateY(-2px);filter:brightness(1.1);}
+.solution-box{display:none;margin-top:18px;}
+.solution-box.open{display:block;animation:su .38s ease;}
+.sol-title{font-family:'Source Code Pro',monospace;font-size:.67rem;color:#e040fb;letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;}
+
+/* ── ER DIAGRAM SVG ── */
+.er-wrap{background:#040e14;border:1px solid #1a3040;border-radius:10px;overflow-x:auto;padding:10px;}
+.er-wrap svg{display:block;margin:0 auto;}
+
+/* ── RA answer ── */
+.ra-block{background:#040e14;border:1px solid #1a3040;border-radius:9px;padding:14px 16px;margin-bottom:10px;}
+.ra-q{font-size:.88rem;color:#7fa8b8;margin-bottom:8px;font-style:italic;}
+.ra-ans{font-family:'Source Code Pro',monospace;font-size:.9rem;color:#e040fb;line-height:1.7;}
+.ra-note{font-size:.83rem;color:#5a8a9a;margin-top:6px;border-left:2px solid #e040fb44;padding-left:10px;}
+</style>
+</head>
+<body>
+
+<!-- ═══ HOME ═══ -->
+<div id="screen-home" class="screen active">
+  <div style="text-align:center;margin-bottom:50px;">
+    <div class="label" style="color:#00e5ff;margin-bottom:12px;">AAMUSTED · Level 200 · CSF</div>
+    <h1 class="serif" style="font-size:clamp(2.2rem,7vw,3.8rem);font-weight:900;line-height:1.1;color:#fff;">
+      DBMS<br/><span style="color:#00e5ff;">University Quiz</span>
+    </h1>
+    <p style="margin-top:14px;color:#5a8a9a;font-weight:300;font-size:.94rem;line-height:1.85;max-width:460px;margin-left:auto;margin-right:auto;">
+      58 MCQs · 1 ER Diagram · 1 Relational Algebra · Full explanations every step.<br/>
+      Based on your DBMS textbook — Units 1–4.
+    </p>
+    <div style="display:inline-flex;gap:18px;margin-top:18px;flex-wrap:wrap;justify-content:center;">
+      <span class="chip" style="background:rgba(0,229,255,.1);color:#00e5ff;">Unit 1: Introduction</span>
+      <span class="chip" style="background:rgba(255,107,53,.1);color:#ff6b35;">Unit 2: ER Model</span>
+      <span class="chip" style="background:rgba(168,255,62,.1);color:#a8ff3e;">Unit 3: Relational Model & SQL</span>
+      <span class="chip" style="background:rgba(224,64,251,.1);color:#e040fb;">Unit 4: Normalisation</span>
+    </div>
+  </div>
+  <div id="topic-list"></div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="screen-quiz" class="screen">
+  <div class="topbar">
+    <button class="btn-back" onclick="goHome()">← Exit</button>
+    <div class="counter" id="q-counter">1 / 58</div>
+  </div>
+  <div class="pbar"><div class="pfill" id="progress-fill" style="width:0%;"></div></div>
+  <span id="q-chip" class="chip" style="margin-bottom:14px;display:inline-block;"></span>
+  <div class="label" style="color:#3a6a7a;margin-bottom:6px;" id="unit-label"></div>
+  <h2 class="serif" id="q-text" style="font-size:clamp(1.08rem,2.8vw,1.4rem);line-height:1.62;color:#fff;margin-bottom:24px;font-weight:700;"></h2>
+  <div id="options-container"></div>
+  <div id="explain-box" style="display:none;"></div>
+  <div style="margin-top:16px;">
+    <button class="btn btn-primary" id="confirm-btn" onclick="confirmAnswer()" style="display:none;">Confirm Answer</button>
+    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display:none;"></button>
+  </div>
+</div>
+
+<!-- ═══ PRACTICALS ═══ -->
+<div id="screen-practical" class="screen">
+  <div class="topbar">
+    <button class="btn-back" onclick="show('result')">← Back to Results</button>
+    <div class="counter mono" style="color:#e040fb;">Practical Questions</div>
+  </div>
+
+  <!-- Q59 — ER DIAGRAM -->
+  <div class="practical-screen">
+    <div class="practical-num">Question 59 · ER Diagram</div>
+    <div class="practical-q">Draw the Entity-Relationship (ER) diagram for a University Registration System based on the following scenario.</div>
+    <div class="scenario-box">
+      <strong style="color:#c0d8e2;">Scenario:</strong><br/><br/>
+      A University consists of multiple <strong style="color:#00e5ff;">Departments</strong>, each identified by a DeptID and DeptName. Each department offers several <strong style="color:#00e5ff;">Courses</strong> (CourseID, CourseName, Credits). An <strong style="color:#ff6b35;">Instructor</strong> (InstructorID, Name, Specialization) belongs to exactly one department and may <em>teach</em> many courses. A <strong style="color:#a8ff3e;">Student</strong> (StudentID, Name, DateOfBirth, Email) can <em>enroll</em> in many courses, and each enrollment records a Grade. Each course must be taught by at least one instructor.<br/><br/>
+      <strong style="color:#c0d8e2;">Required:</strong> Show entities, attributes (with primary keys underlined), relationships with cardinalities (crow's foot notation), and participation constraints.
+    </div>
+    <button class="reveal-btn" onclick="toggleSolution('er-solution',this)">🔍 Reveal ER Diagram Solution</button>
+
+    <div class="solution-box" id="er-solution">
+      <div class="sol-title">📐 Model Answer — ER Diagram</div>
+      <!-- SVG ER Diagram -->
+      <div class="er-wrap">
+        <svg width="680" height="520" viewBox="0 0 680 520" style="font-family:'Source Code Pro',monospace;">
+          <!-- ── STYLES ── -->
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#4a7a8a"/>
+            </marker>
+          </defs>
+
+          <!-- ─── BACKGROUND GRID ─── -->
+          <rect width="680" height="520" fill="#040e14" rx="8"/>
+
+          <!-- ══ ENTITIES ══ -->
+          <!-- DEPARTMENT -->
+          <rect x="20" y="210" width="150" height="50" fill="#0b1c27" stroke="#00e5ff" stroke-width="2" rx="4"/>
+          <text x="95" y="241" fill="#00e5ff" font-size="14" font-weight="bold" text-anchor="middle">DEPARTMENT</text>
+
+          <!-- COURSE -->
+          <rect x="265" y="210" width="150" height="50" fill="#0b1c27" stroke="#a8ff3e" stroke-width="2" rx="4"/>
+          <text x="340" y="241" fill="#a8ff3e" font-size="14" font-weight="bold" text-anchor="middle">COURSE</text>
+
+          <!-- INSTRUCTOR -->
+          <rect x="20" y="390" width="150" height="50" fill="#0b1c27" stroke="#ff6b35" stroke-width="2" rx="4"/>
+          <text x="95" y="421" fill="#ff6b35" font-size="14" font-weight="bold" text-anchor="middle">INSTRUCTOR</text>
+
+          <!-- STUDENT -->
+          <rect x="510" y="210" width="150" height="50" fill="#0b1c27" stroke="#ffca28" stroke-width="2" rx="4"/>
+          <text x="585" y="241" fill="#ffca28" font-size="14" font-weight="bold" text-anchor="middle">STUDENT</text>
+
+          <!-- ══ RELATIONSHIP DIAMONDS ══ -->
+          <!-- OFFERS (Dept—Course) -->
+          <polygon points="200,220 240,235 200,250 160,235" fill="#0b1c27" stroke="#a8ff3e" stroke-width="1.8"/>
+          <text x="200" y="239" fill="#a8ff3e" font-size="11" font-weight="bold" text-anchor="middle">OFFERS</text>
+
+          <!-- BELONGS_TO (Instructor—Dept) -->
+          <polygon points="95,340 135,355 95,370 55,355" fill="#0b1c27" stroke="#ff6b35" stroke-width="1.8"/>
+          <text x="95" y="359" fill="#ff6b35" font-size="10" font-weight="bold" text-anchor="middle">BELONGS_TO</text>
+
+          <!-- TEACHES (Instructor—Course) -->
+          <polygon points="265,370 305,385 265,400 225,385" fill="#0b1c27" stroke="#e040fb" stroke-width="1.8"/>
+          <text x="265" y="389" fill="#e040fb" font-size="11" font-weight="bold" text-anchor="middle">TEACHES</text>
+
+          <!-- ENROLLED_IN (Student—Course) -->
+          <polygon points="455,220 495,235 455,250 415,235" fill="#0b1c27" stroke="#ffca28" stroke-width="1.8"/>
+          <text x="455" y="234" fill="#ffca28" font-size="10" font-weight="bold" text-anchor="middle">ENROLLED</text>
+          <text x="455" y="246" fill="#ffca28" font-size="10" font-weight="bold" text-anchor="middle">_IN</text>
+
+          <!-- ══ RELATIONSHIP LINES ══ -->
+          <!-- Dept ── OFFERS -->
+          <line x1="170" y1="235" x2="160" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- OFFERS ── Course -->
+          <line x1="240" y1="235" x2="265" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- Dept ── BELONGS_TO -->
+          <line x1="95" y1="260" x2="95" y2="340" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- BELONGS_TO ── Instructor -->
+          <line x1="95" y1="370" x2="95" y2="390" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- Instructor ── TEACHES -->
+          <line x1="170" y1="415" x2="225" y2="385" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- TEACHES ── Course -->
+          <line x1="305" y1="385" x2="340" y2="260" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- Course ── ENROLLED_IN -->
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="1"/>
+          <!-- Student ── ENROLLED_IN -->
+          <line x1="495" y1="235" x2="510" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="1"/>
+
+          <!-- correct lines -->
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <line x1="415" y1="235" x2="265" y2="235" stroke="#4a7a8a" stroke-width="0"/>
+
+          <!-- Dept to OFFERS line -->
+          <line x1="170" y1="235" x2="160" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- OFFERS to Course -->
+          <line x1="240" y1="235" x2="265" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <!-- Course to ENROLLED_IN -->
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="1.5"/>
+
+          <!-- ALL correct lines -->
+          <!-- Dept — OFFERS -->
+          <line x1="170" y1="235" x2="160" y2="235" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- OFFERS — Course -->
+          <line x1="240" y1="235" x2="265" y2="235" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- Course — ENROLLED_IN -->
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- ENROLLED_IN — Student -->
+          <line x1="495" y1="235" x2="510" y2="235" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- Dept — BELONGS_TO -->
+          <line x1="95" y1="260" x2="95" y2="340" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- BELONGS_TO — Instructor -->
+          <line x1="95" y1="370" x2="95" y2="390" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- Instructor — TEACHES -->
+          <line x1="170" y1="415" x2="225" y2="385" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- TEACHES — Course -->
+          <line x1="305" y1="385" x2="340" y2="260" stroke="#4a7a8a" stroke-width="2"/>
+          <!-- Course — ENROLLED_IN line -->
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="2"/>
+
+          <!-- fix: Course right edge to ENROLLED_IN left -->
+          <line x1="415" y1="235" x2="415" y2="235" stroke="#4a7a8a" stroke-width="2"/>
+
+          <!-- Cardinality labels -->
+          <!-- Dept 1 — OFFERS M Course -->
+          <text x="178" y="228" fill="#00e5ff" font-size="12" font-weight="bold">1</text>
+          <text x="248" y="228" fill="#a8ff3e" font-size="12" font-weight="bold">M</text>
+          <!-- Dept 1 — BELONGS_TO M Instructor -->
+          <text x="100" y="292" fill="#00e5ff" font-size="12" font-weight="bold">1</text>
+          <text x="100" y="382" fill="#ff6b35" font-size="12" font-weight="bold">M</text>
+          <!-- Instructor M — TEACHES M Course -->
+          <text x="182" y="408" fill="#ff6b35" font-size="12" font-weight="bold">M</text>
+          <text x="322" y="348" fill="#a8ff3e" font-size="12" font-weight="bold">M</text>
+          <!-- Student M — ENROLLED_IN M Course -->
+          <text x="503" y="228" fill="#ffca28" font-size="12" font-weight="bold">M</text>
+          <text x="422" y="228" fill="#a8ff3e" font-size="12" font-weight="bold">M</text>
+
+          <!-- ══ ATTRIBUTES — DEPARTMENT ══ -->
+          <ellipse cx="20" cy="180" rx="38" ry="17" fill="none" stroke="#00e5ff" stroke-width="1.3"/>
+          <text x="20" y="184" fill="#00e5ff" font-size="10" text-anchor="middle" text-decoration="underline">DeptID</text>
+          <line x1="20" y1="197" x2="50" y2="210" stroke="#00e5ff" stroke-width="1"/>
+
+          <ellipse cx="95" cy="170" rx="44" ry="17" fill="none" stroke="#00e5ff" stroke-width="1.3"/>
+          <text x="95" y="174" fill="#00e5ff" font-size="10" text-anchor="middle">DeptName</text>
+          <line x1="95" y1="187" x2="95" y2="210" stroke="#00e5ff" stroke-width="1"/>
+
+          <!-- ══ ATTRIBUTES — COURSE ══ -->
+          <ellipse cx="280" cy="170" rx="40" ry="17" fill="none" stroke="#a8ff3e" stroke-width="1.3"/>
+          <text x="280" y="174" fill="#a8ff3e" font-size="10" text-anchor="middle" text-decoration="underline">CourseID</text>
+          <line x1="280" y1="187" x2="300" y2="210" stroke="#a8ff3e" stroke-width="1"/>
+
+          <ellipse cx="340" cy="160" rx="46" ry="17" fill="none" stroke="#a8ff3e" stroke-width="1.3"/>
+          <text x="340" y="164" fill="#a8ff3e" font-size="10" text-anchor="middle">CourseName</text>
+          <line x1="340" y1="177" x2="340" y2="210" stroke="#a8ff3e" stroke-width="1"/>
+
+          <ellipse cx="400" cy="170" rx="36" ry="17" fill="none" stroke="#a8ff3e" stroke-width="1.3"/>
+          <text x="400" y="174" fill="#a8ff3e" font-size="10" text-anchor="middle">Credits</text>
+          <line x1="400" y1="187" x2="385" y2="210" stroke="#a8ff3e" stroke-width="1"/>
+
+          <!-- ══ ATTRIBUTES — INSTRUCTOR ══ -->
+          <ellipse cx="20" cy="468" rx="46" ry="17" fill="none" stroke="#ff6b35" stroke-width="1.3"/>
+          <text x="20" y="472" fill="#ff6b35" font-size="10" text-anchor="middle" text-decoration="underline">InstructorID</text>
+          <line x1="32" y1="452" x2="50" y2="440" stroke="#ff6b35" stroke-width="1"/>
+
+          <ellipse cx="95" cy="475" rx="32" ry="17" fill="none" stroke="#ff6b35" stroke-width="1.3"/>
+          <text x="95" y="479" fill="#ff6b35" font-size="10" text-anchor="middle">Name</text>
+          <line x1="95" y1="458" x2="95" y2="440" stroke="#ff6b35" stroke-width="1"/>
+
+          <ellipse cx="165" cy="468" rx="46" ry="17" fill="none" stroke="#ff6b35" stroke-width="1.3"/>
+          <text x="165" y="472" fill="#ff6b35" font-size="10" text-anchor="middle">Specialization</text>
+          <line x1="155" y1="452" x2="140" y2="440" stroke="#ff6b35" stroke-width="1"/>
+
+          <!-- ══ ATTRIBUTES — STUDENT ══ -->
+          <ellipse cx="528" cy="170" rx="42" ry="17" fill="none" stroke="#ffca28" stroke-width="1.3"/>
+          <text x="528" y="174" fill="#ffca28" font-size="10" text-anchor="middle" text-decoration="underline">StudentID</text>
+          <line x1="528" y1="187" x2="540" y2="210" stroke="#ffca28" stroke-width="1"/>
+
+          <ellipse cx="585" cy="160" rx="32" ry="17" fill="none" stroke="#ffca28" stroke-width="1.3"/>
+          <text x="585" y="164" fill="#ffca28" font-size="10" text-anchor="middle">Name</text>
+          <line x1="585" y1="177" x2="585" y2="210" stroke="#ffca28" stroke-width="1"/>
+
+          <ellipse cx="642" cy="170" rx="30" ry="17" fill="none" stroke="#ffca28" stroke-width="1.3"/>
+          <text x="642" y="174" fill="#ffca28" font-size="10" text-anchor="middle">Email</text>
+          <line x1="636" y1="187" x2="625" y2="210" stroke="#ffca28" stroke-width="1"/>
+
+          <!-- ══ Grade attribute on ENROLLED_IN relationship ══ -->
+          <ellipse cx="455" cy="285" rx="30" ry="17" fill="none" stroke="#ffca28" stroke-width="1.3" stroke-dasharray="3,2"/>
+          <text x="455" y="289" fill="#ffca28" font-size="10" text-anchor="middle">Grade</text>
+          <line x1="455" y1="268" x2="455" y2="250" stroke="#ffca28" stroke-width="1"/>
+
+          <!-- ══ LEGEND ══ -->
+          <rect x="20" y="18" width="640" height="62" fill="#07121a" rx="6" stroke="#1a3040" stroke-width="1"/>
+          <text x="30" y="36" fill="#4a7a8a" font-size="10">LEGEND:</text>
+          <rect x="90" y="24" width="30" height="16" fill="none" stroke="#fff" stroke-width="1.3" rx="2"/>
+          <text x="125" y="36" fill="#9abac8" font-size="10">Entity</text>
+          <ellipse cx="196" cy="32" rx="22" ry="10" fill="none" stroke="#fff" stroke-width="1.3"/>
+          <text x="222" y="36" fill="#9abac8" font-size="10">Attribute</text>
+          <polygon points="300,24 330,32 300,40 270,32" fill="none" stroke="#fff" stroke-width="1.3"/>
+          <text x="336" y="36" fill="#9abac8" font-size="10">Relationship</text>
+          <ellipse cx="438" cy="32" rx="22" ry="10" fill="none" stroke="#fff" stroke-width="1.3" stroke-dasharray="3,2"/>
+          <text x="464" y="36" fill="#9abac8" font-size="10">Derived/Rel. Attr.</text>
+          <line x1="90" y1="56" x2="110" y2="56" stroke="#fff" stroke-width="2"/>
+          <line x1="108" y1="50" x2="116" y2="56" stroke="#fff" stroke-width="1.5"/>
+          <line x1="108" y1="62" x2="116" y2="56" stroke="#fff" stroke-width="1.5"/>
+          <text x="122" y="60" fill="#9abac8" font-size="10">1:M Cardinality   (M = MANY, 1 = ONE)</text>
+        </svg>
+      </div>
+      <div style="margin-top:14px;background:#07121a;border-radius:8px;padding:14px 16px;font-size:.86rem;line-height:1.8;color:#7fa8b8;">
+        <strong style="color:#e040fb;">Key points to note:</strong><br/>
+        • <strong style="color:#00e5ff;">DEPARTMENT</strong> — Strong entity; primary key = DeptID<br/>
+        • <strong style="color:#a8ff3e;">COURSE</strong> — Strong entity; primary key = CourseID<br/>
+        • <strong style="color:#ff6b35;">INSTRUCTOR</strong> — Strong entity; primary key = InstructorID<br/>
+        • <strong style="color:#ffca28;">STUDENT</strong> — Strong entity; primary key = StudentID<br/>
+        • <strong>OFFERS</strong>: 1 Dept → Many Courses (total participation from Course side)<br/>
+        • <strong>BELONGS_TO</strong>: Many Instructors → 1 Dept (total from Instructor side)<br/>
+        • <strong>TEACHES</strong>: Many Instructors ↔ Many Courses (M:N)<br/>
+        • <strong>ENROLLED_IN</strong>: Many Students ↔ Many Courses (M:N) with <em>Grade</em> as a relationship attribute<br/>
+        • In the relational mapping, ENROLLED_IN and TEACHES become junction tables
+      </div>
+    </div>
+  </div>
+
+  <!-- Q60 — RELATIONAL ALGEBRA -->
+  <div class="practical-screen">
+    <div class="practical-num">Question 60 · Relational Algebra</div>
+    <div class="practical-q">Given the following relational schema, write Relational Algebra expressions for the queries below.</div>
+    <div class="scenario-box">
+      <strong style="color:#c0d8e2;">Schema:</strong><br/>
+      <span class="mono" style="color:#e040fb;">Student</span><span style="color:#9abac8;">(</span><span style="color:#ffca28;text-decoration:underline;">StudentID</span><span style="color:#9abac8;">, Name, Age, DeptID)</span><br/>
+      <span class="mono" style="color:#e040fb;">Department</span><span style="color:#9abac8;">(</span><span style="color:#ffca28;text-decoration:underline;">DeptID</span><span style="color:#9abac8;">, DeptName)</span><br/>
+      <span class="mono" style="color:#e040fb;">Course</span><span style="color:#9abac8;">(</span><span style="color:#ffca28;text-decoration:underline;">CourseID</span><span style="color:#9abac8;">, CourseName, Credits, DeptID)</span><br/>
+      <span class="mono" style="color:#e040fb;">Enrolment</span><span style="color:#9abac8;">(</span><span style="color:#ffca28;text-decoration:underline;">StudentID, CourseID</span><span style="color:#9abac8;">, Grade)</span><br/><br/>
+      <strong style="color:#c0d8e2;">Queries:</strong><br/>
+      <strong style="color:#a8ff3e;">a)</strong> Find the <em>names</em> of all students enrolled in the department named <strong>'Computer Science'</strong>.<br/>
+      <strong style="color:#a8ff3e;">b)</strong> List the <em>names and ages</em> of students who received a grade of <strong>'A'</strong> in any course.<br/>
+      <strong style="color:#a8ff3e;">c)</strong> Find the <em>names of all courses</em> with more than <strong>3 credits</strong>.<br/>
+      <strong style="color:#a8ff3e;">d)</strong> List the <em>names of students</em> who are enrolled in <strong>every course</strong> offered by the <strong>'Computer Science'</strong> department.<br/>
+      <strong style="color:#a8ff3e;">e)</strong> Find the <em>names of instructors</em> (from Student relation used as proxy here) who have <strong>NOT</strong> enrolled in any course. (Use Set-Difference.)
+    </div>
+    <button class="reveal-btn" onclick="toggleSolution('ra-solution',this)">🔍 Reveal Relational Algebra Answers</button>
+
+    <div class="solution-box" id="ra-solution">
+      <div class="sol-title">📐 Model Answers — Relational Algebra</div>
+
+      <div class="ra-block">
+        <div class="ra-q"><strong style="color:#a8ff3e;">a)</strong> Names of students in the 'Computer Science' department:</div>
+        <div class="ra-ans">π<sub>Name</sub>( Student ⋈ σ<sub>DeptName = 'Computer Science'</sub>(Department) )</div>
+        <div class="ra-note">First apply Selection (σ) on Department to get only the CS department record, then Natural Join (⋈) with Student on DeptID, then Project (π) only the Name column.</div>
+      </div>
+
+      <div class="ra-block">
+        <div class="ra-q"><strong style="color:#a8ff3e;">b)</strong> Names and ages of students who received an 'A' grade:</div>
+        <div class="ra-ans">π<sub>Name, Age</sub>( Student ⋈ σ<sub>Grade = 'A'</sub>(Enrolment) )</div>
+        <div class="ra-note">Selection filters Enrolment rows with Grade='A'. Natural join with Student (on StudentID) brings in Name and Age. Projection removes other columns.</div>
+      </div>
+
+      <div class="ra-block">
+        <div class="ra-q"><strong style="color:#a8ff3e;">c)</strong> Course names with more than 3 credits:</div>
+        <div class="ra-ans">π<sub>CourseName</sub>( σ<sub>Credits &gt; 3</sub>(Course) )</div>
+        <div class="ra-note">Apply Selection directly on the Course relation with the predicate Credits > 3, then project only CourseName. This is a single-relation query.</div>
+      </div>
+
+      <div class="ra-block">
+        <div class="ra-q"><strong style="color:#a8ff3e;">d)</strong> Students enrolled in EVERY CS course (Division operation):</div>
+        <div class="ra-ans">
+          CS_Courses ← π<sub>CourseID</sub>( Course ⋈ σ<sub>DeptName='Computer Science'</sub>(Department) )<br/>
+          Enrolled_IDs ← π<sub>StudentID, CourseID</sub>(Enrolment)<br/>
+          Result ← π<sub>Name</sub>( Student ⋈ (Enrolled_IDs ÷ CS_Courses) )
+        </div>
+        <div class="ra-note">Division (÷) answers "for all" queries. CS_Courses gives all CS CourseIDs. Division finds StudentIDs enrolled in ALL of those courses. Join with Student retrieves the names.</div>
+      </div>
+
+      <div class="ra-block">
+        <div class="ra-q"><strong style="color:#a8ff3e;">e)</strong> Students who have NOT enrolled in any course (Set-Difference):</div>
+        <div class="ra-ans">
+          All_Students ← π<sub>StudentID</sub>(Student)<br/>
+          Enrolled_Students ← π<sub>StudentID</sub>(Enrolment)<br/>
+          Not_Enrolled ← All_Students − Enrolled_Students<br/>
+          Result ← π<sub>Name</sub>( Student ⋈ Not_Enrolled )
+        </div>
+        <div class="ra-note">Set-Difference (−) returns StudentIDs in Student that have no corresponding entry in Enrolment. Both operands must be union-compatible (same schema: just StudentID). Join retrieves names.</div>
+      </div>
+
+      <div style="margin-top:12px;background:#07121a;border-radius:8px;padding:12px 14px;font-size:.84rem;color:#5a8a9a;line-height:1.75;">
+        <strong style="color:#e040fb;">Key Operators Summary:</strong><br/>
+        σ (Selection) — filters rows &nbsp;|&nbsp; π (Projection) — selects columns &nbsp;|&nbsp; ⋈ (Natural Join) — joins on common attrs<br/>
+        ÷ (Division) — "for all" queries &nbsp;|&nbsp; − (Set-Difference) — in R but not S &nbsp;|&nbsp; ∪ (Union) — combines both
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-outline" onclick="show('result')" style="margin-top:10px;">← Back to Results</button>
+</div>
+
+<!-- ═══ RESULTS ═══ -->
+<div id="screen-result" class="screen">
+  <div style="margin-bottom:44px;">
+    <div class="label" style="color:#3a6a7a;margin-bottom:12px;text-align:center;">PERFORMANCE REPORT</div>
+    <div class="score-big" id="score-pct"></div>
+    <div style="text-align:center;">
+      <div class="mono" id="grade-label" style="font-size:.82rem;letter-spacing:.12em;margin-top:10px;"></div>
+      <p id="score-sub" style="color:#6a9aaa;font-size:.9rem;margin-top:9px;"></p>
+      <p id="grade-note" style="color:#4a7a8a;font-size:.87rem;margin-top:8px;font-style:italic;"></p>
+    </div>
+  </div>
+  <div class="section-title">SCORE BY TOPIC</div>
+  <div id="topic-stats" style="margin-bottom:28px;"></div>
+  <div id="improve-section"></div>
+  <div id="strong-section"></div>
+  <div class="section-title" id="missed-title" style="margin-top:4px;"></div>
+  <div id="missed-list"></div>
+  <div id="perfect-box" style="display:none;" class="perfect">
+    <div style="font-size:2.2rem;margin-bottom:8px;">🎉</div>
+    <p style="color:#a8ff3e;font-weight:700;font-size:1.05rem;">Perfect MCQ score! Every question answered correctly.</p>
+  </div>
+  <div style="margin-top:28px;" id="result-buttons"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  TOPIC COLOR MAP
+// ═══════════════════════════════════════════
+const TC = {
+  "Unit 1 — Introduction":       { accent:"#00e5ff", badge:"rgba(0,229,255,.1)" },
+  "Unit 2 — ER Model Concepts":  { accent:"#ff6b35", badge:"rgba(255,107,53,.1)" },
+  "Unit 3 — Relational Model & SQL": { accent:"#a8ff3e", badge:"rgba(168,255,62,.1)" },
+  "Unit 4 — Normalisation":      { accent:"#e040fb", badge:"rgba(224,64,251,.1)" },
+};
+
+const TIPS = {
+  "Unit 1 — Introduction":"Review Data, DBMS functions, three-layer architecture, data models (ER, Relational, Hierarchical, Network, OO), types of DB systems (Centralised, Distributed, Client-Server), and the four database language categories (DDL, DML, DCL, DQL).",
+  "Unit 2 — ER Model Concepts":"Draw ER diagrams by hand for real scenarios. Revise entity types, attribute types, relationship notation, cardinality mappings (1:1, 1:M, M:N), participation constraints, Specialisation, Generalisation, Aggregation, and ER-to-Table reduction rules.",
+  "Unit 3 — Relational Model & SQL":"Practice all 8 relational algebra operations on paper. For SQL: master SELECT with WHERE, ORDER BY, GROUP BY, HAVING; all JOIN types; Subqueries; Views; Indexes; Sequences; Triggers. Know integrity constraints: domain, entity, referential.",
+  "Unit 4 — Normalisation":"Work through normalisation examples step by step: 1NF (atomic values) → 2NF (no partial deps) → 3NF (no transitive deps) → BCNF. Know Armstrong's Axioms, lossless-join decomposition, and multivalued dependencies for 4NF.",
+};
+
+// ═══════════════════════════════════════════
+//  58 MCQ QUESTIONS
+// ═══════════════════════════════════════════
+const QUESTIONS = [
+// ── UNIT 1: INTRODUCTION (15) ──────────────
+{id:1,topic:"Unit 1 — Introduction",q:"Which of the following best describes a Data Warehouse?",
+ options:["A small database for daily transaction processing","A large integrated repository of historical data used for decision support and analysis","A backup system for operational databases","A physical room where database servers are stored"],
+ answer:1,explain:"A data warehouse collects, integrates, and stores large volumes of historical data from multiple sources. Unlike operational (OLTP) databases used for day-to-day transactions, a warehouse is designed for OLAP — analytical queries, reporting, and business intelligence."},
+
+{id:2,topic:"Unit 1 — Introduction",q:"A Data Dictionary in a DBMS is best described as ___.",
+ options:["An alphabetical list of all SQL commands","A repository storing metadata (data about data) — table names, column types, constraints, and relationships","A physical file that stores database backups","A collection of stored procedures"],
+ answer:1,explain:"The data dictionary (also called system catalogue) stores metadata — descriptive information about the structure of the database itself. It includes table names, attribute names, data types, key constraints, user privileges, and relationship definitions. The DBMS consults it when processing queries."},
+
+{id:3,topic:"Unit 1 — Introduction",q:"Which of the following is a key DISADVANTAGE of a traditional file processing system compared to a DBMS?",
+ options:["Centralised data management","Data redundancy and inconsistency","Strong data security controls","Built-in concurrency management"],
+ answer:1,explain:"File processing systems store the same data in multiple files (redundancy). When one copy is updated but others are not, data becomes inconsistent. DBMS solves this by centralising data with a single authoritative source."},
+
+{id:4,topic:"Unit 1 — Introduction",q:"The three-layer data architecture (ANSI/SPARC) consists of ___.",
+ options:["Input, Processing, Output","External, Conceptual, Internal","Client, Middleware, Server","Physical, Logical, Application"],
+ answer:1,explain:"The ANSI/SPARC three-schema architecture has three levels: the External (View) level — individual user views; the Conceptual (Logical) level — the overall logical structure of the entire database; and the Internal (Physical) level — how data is physically stored on disk."},
+
+{id:5,topic:"Unit 1 — Introduction",q:"A centralised database system is one where ___.",
+ options:["Data is distributed across geographically separated sites","All data resides on a single server/location","Every user has their own copy of the database","The database runs on every client machine"],
+ answer:1,explain:"In a centralised database system, all data is stored and managed at a single location. All users connect to this single server. While simple to manage, it creates a single point of failure and potential performance bottleneck as user numbers grow."},
+
+{id:6,topic:"Unit 1 — Introduction",q:"Which data model organises data in a tree-like parent-child structure?",
+ options:["Relational model","Object-oriented model","Network model","Hierarchical model"],
+ answer:3,explain:"The hierarchical model organises data as a tree where each child record has exactly ONE parent but can have multiple children (one-to-many). IBM's IMS (Information Management System) is a classic example. Its rigidity makes it unsuitable for many-to-many relationships."},
+
+{id:7,topic:"Unit 1 — Introduction",q:"The network data model extends the hierarchical model by allowing ___.",
+ options:["Data to be stored in tables","A child record to have MORE THAN ONE parent","Automatic query optimisation","Object-oriented inheritance"],
+ answer:1,explain:"Unlike the hierarchical model (one parent per child), the network model allows a child record to have multiple parents. This creates a graph (rather than tree) structure, accommodating many-to-many relationships, but at the cost of increased complexity."},
+
+{id:8,topic:"Unit 1 — Introduction",q:"Which category of database systems stores data across multiple geographically separated locations?",
+ options:["Centralised database system","Parallel database system","Distributed database system","Client/Server database system"],
+ answer:2,explain:"A distributed database system distributes data storage and processing across multiple physical sites connected by a network. It can improve performance, reliability, and local data access speeds, but introduces challenges of distributed transaction management and consistency."},
+
+{id:9,topic:"Unit 1 — Introduction",q:"Data Query Language (DQL) is primarily concerned with ___.",
+ options:["Defining the structure of the database","Controlling user access permissions","Retrieving data from the database","Managing database transactions"],
+ answer:2,explain:"DQL (Data Query Language) is the component of SQL used to retrieve (query) data. The SELECT statement is its core command. While some classify SELECT under DML, many textbooks (including yours) list DQL as a separate category."},
+
+{id:10,topic:"Unit 1 — Introduction",q:"Physical data independence means ___.",
+ options:["Changes to the physical storage schema do NOT require changes to the logical schema","Changes to the logical schema do NOT affect application programs","All data can be physically moved to any device","Users can directly access physical storage files"],
+ answer:0,explain:"Physical data independence means you can reorganise how data is physically stored (e.g., change file organisation, add new indexes, or migrate to different hardware) without altering the conceptual (logical) schema that applications use."},
+
+{id:11,topic:"Unit 1 — Introduction",q:"Which of the following is an ADVANTAGE of a DBMS over file processing systems?",
+ options:["Lower initial cost of implementation","Reduced data redundancy and improved consistency","Simpler system with fewer components","No need for database administrators"],
+ answer:1,explain:"DBMS advantages include: reduced data redundancy (centralised storage), improved data consistency, better data integrity enforcement, data security, concurrent access support, crash recovery, and data sharing. However, DBMS has a high initial cost — that is a disadvantage."},
+
+{id:12,topic:"Unit 1 — Introduction",q:"The object-relational data model is best described as ___.",
+ options:["A purely graph-based database structure","An extension of the relational model incorporating object-oriented features such as complex types and inheritance","A replacement for the network data model","A model that eliminates the use of tables entirely"],
+ answer:1,explain:"The object-relational model (used in databases like PostgreSQL and Oracle) combines the table-based structure of the relational model with OOP features such as user-defined data types, inheritance between tables, and method definitions, giving it greater expressiveness."},
+
+{id:13,topic:"Unit 1 — Introduction",q:"A DBMS Interfaces category that allows users to type SQL commands directly is called ___.",
+ options:["Forms-based interface","Natural language interface","Command-line / DBA interface","Menu-driven interface"],
+ answer:2,explain:"A command-line or DBA interface allows trained users (typically DBAs) to type SQL statements directly. MySQL Shell, SQL*Plus (Oracle), and psql (PostgreSQL) are examples. Forms-based and menu-driven interfaces are for non-technical end users."},
+
+{id:14,topic:"Unit 1 — Introduction",q:"Metadata in the context of DBMS refers to ___.",
+ options:["Actual data values stored in tables","Data that describes the structure, constraints, and properties of the database itself","Encrypted versions of sensitive data","Backup copies of transaction logs"],
+ answer:1,explain:"Metadata is 'data about data'. In a DBMS, it includes information about table names, column names, data types, key definitions, constraints, user permissions, and indexes. The data dictionary/system catalogue stores all metadata."},
+
+{id:15,topic:"Unit 1 — Introduction",q:"Fourth-Generation Languages (4GL) in DBMS context are characterised by ___.",
+ options:["Requiring detailed procedural code for every operation","Non-procedural languages where the user specifies WHAT is needed, not HOW to get it","Extremely low-level machine code instructions","Languages requiring knowledge of physical storage",""],
+ answer:1,explain:"4GLs (like SQL, QBE, and report generators) allow users to specify what result they want without prescribing how to compute it. This is in contrast to 3GLs (C, Java, COBOL) which require explicit step-by-step programming. SQL is the primary 4GL for databases."},
+
+// ── UNIT 2: ER MODEL CONCEPTS (12) ─────────
+{id:16,topic:"Unit 2 — ER Model Concepts",q:"Specialisation in ER modelling is ___.",
+ options:["A bottom-up process combining entities with shared features into a higher-level entity","A top-down process identifying subgroups of an entity set with distinguishing characteristics","The process of removing redundant entities from a diagram","Combining multiple relationships into a single relationship"],
+ answer:1,explain:"Specialisation is a top-down refinement process. You start with a general entity set and identify subsets (subclasses) with special attributes or relationships. Example: Person → Employee, Student. ISA (is-a) hierarchies result from specialisation."},
+
+{id:17,topic:"Unit 2 — ER Model Concepts",q:"Generalisation in ER modelling is ___.",
+ options:["A top-down process identifying subclasses of an entity","A bottom-up process combining common features of lower-level entities into a higher-level generalised entity","The process of converting M:N relationships to 1:M","Assigning primary keys to all entity sets"],
+ answer:1,explain:"Generalisation is the reverse of specialisation — a bottom-up approach. You identify common attributes and relationships shared across multiple entities and abstract them into a single higher-level entity. Example: Car + Truck → Vehicle."},
+
+{id:18,topic:"Unit 2 — ER Model Concepts",q:"Aggregation in ER modelling is needed when ___.",
+ options:["An entity has more attributes than can fit in a single table","A relationship set itself needs to participate in another relationship","Two entities have no direct relationship","An entity has only one attribute"],
+ answer:1,explain:"Aggregation treats a relationship (and its participating entities) as a single higher-level abstract entity, which can then participate in further relationships. Example: the relationship 'Works_On' (between Employee and Project) is itself associated with a Manager through 'Manages'."},
+
+{id:19,topic:"Unit 2 — ER Model Concepts",q:"The existence dependency between a weak entity and its identifying entity means ___.",
+ options:["The weak entity has no primary key of any kind","The weak entity cannot logically exist if its identifying (strong) entity is deleted","The weak entity shares its primary key with the strong entity","The weak entity can participate in multiple identifying relationships"],
+ answer:1,explain:"Existence dependency (also called identification dependency) means a weak entity's existence depends entirely on its owner (identifying) entity. If the identifying entity is deleted, all its dependent weak entities must also be deleted. Example: Dependents of an Employee."},
+
+{id:20,topic:"Unit 2 — ER Model Concepts",q:"In ER mapping, how is a binary Many-to-Many (M:N) relationship set converted to a relational table?",
+ options:["It is absorbed into one of the two entity tables with a foreign key","A separate junction/bridge table is created containing the primary keys of both entity tables","Both entity tables are merged into one new table","A view is created over both entity tables"],
+ answer:1,explain:"A M:N relationship requires a dedicated junction (associative/bridge) table containing the primary keys of both participating entities as foreign keys. Together, these keys usually form the composite primary key of the junction table. Any relationship attributes also go into this table."},
+
+{id:21,topic:"Unit 2 — ER Model Concepts",q:"Participation constraints in an ER diagram specify ___.",
+ options:["Whether entities can have derived attributes","Whether every entity instance MUST participate in a relationship (total) or if participation is optional (partial)","The maximum number of attributes an entity can have","Which entity is stronger in a relationship"],
+ answer:1,explain:"Total participation (shown by a double line) means EVERY instance of the entity must participate in the relationship. Partial participation (single line) allows some instances not to participate. Example: Every Employee must belong to a Department (total), but not every Employee manages a Department (partial)."},
+
+{id:22,topic:"Unit 2 — ER Model Concepts",q:"A ternary relationship in an ER diagram involves ___.",
+ options:["Three attributes on one entity","Three entity sets participating in a single relationship","Three separate ER diagrams","Three primary keys in one table"],
+ answer:1,explain:"A ternary relationship has three entity sets associated with one relationship diamond. The degree of a relationship is the number of entity sets participating in it. Example: Supplier supplies Part to Project is a ternary relationship among Supplier, Part, and Project."},
+
+{id:23,topic:"Unit 2 — ER Model Concepts",q:"When reducing a strong entity set to a table, ___.",
+ options:["All its attributes form columns, and its primary key attribute becomes the table's primary key","Only its non-key attributes are included","It is merged with its related entity's table","It is converted to a view"],
+ answer:0,explain:"In ER-to-Table mapping: a strong entity set maps directly to a relation where ALL attributes become columns and the entity's primary key becomes the primary key of the resulting table. This is the simplest mapping case."},
+
+{id:24,topic:"Unit 2 — ER Model Concepts",q:"An associative entity (association) in ER modelling is used to ___.",
+ options:["Represent a many-to-many relationship that also has its own attributes","Simplify a weak entity","Replace a strong entity with a composite attribute","Remove relationships from the diagram"],
+ answer:0,explain:"An associative entity (also called associative relationship or gerund) models a M:N relationship that has attributes of its own. It is represented as a rectangle with a relationship diamond inside. Example: Enrolment (with Grade) between Student and Course."},
+
+{id:25,topic:"Unit 2 — ER Model Concepts",q:"In reduction of an E-R diagram to tables, a weak entity set creates a table where ___.",
+ options:["Only the discriminator attribute is the primary key","The primary key is the combination of the identifying (strong) entity's primary key AND the weak entity's partial key (discriminator)","The table has no primary key","The identifying entity's table absorbs the weak entity's attributes"],
+ answer:1,explain:"A weak entity's table uses a composite primary key formed by the primary key of its identifying (owner) entity PLUS its own partial key (discriminator). It also has a foreign key referencing the identifying entity's table. Example: Depends(EmpID, DependentName, Relationship) where DependentName is the discriminator."},
+
+{id:26,topic:"Unit 2 — ER Model Concepts",q:"Mapping cardinality of 'One-to-One' (1:1) between entities A and B is implemented relationally by ___.",
+ options:["Creating a junction table between A and B","Placing the primary key of one entity as a foreign key in the other entity's table","Merging both entities into a single table always","Creating a separate table for the relationship with no primary key"],
+ answer:1,explain:"For 1:1 relationships, you can place the primary key of one entity as a foreign key in the other entity's table (the entity with total participation typically holds the foreign key). Alternatively, both can be merged, but adding a FK is the standard mapping approach."},
+
+{id:27,topic:"Unit 2 — ER Model Concepts",q:"What does the double line (=) connecting an entity to a relationship in an ER diagram indicate?",
+ options:["The entity has a composite primary key","The entity has total (mandatory) participation in the relationship","The relationship is recursive","The entity is a weak entity"],
+ answer:1,explain:"A double line between an entity and a relationship symbol represents total participation — meaning EVERY instance of that entity must participate in that relationship. A single line means partial (optional) participation."},
+
+// ── UNIT 3: RELATIONAL MODEL & SQL (20) ─────
+{id:28,topic:"Unit 3 — Relational Model & SQL",q:"Domain constraints in a relational model define ___.",
+ options:["The maximum number of rows permitted in a relation","The set of permissible values (type, format, range) for each attribute","How one table references another","The number of foreign keys allowed per table"],
+ answer:1,explain:"Domain constraints specify the data type (integer, char, date), valid range, and format for each attribute. They are the most basic form of integrity constraint and are checked for every INSERT and UPDATE operation."},
+
+{id:29,topic:"Unit 3 — Relational Model & SQL",q:"Entity integrity constraint requires that ___.",
+ options:["All foreign keys reference valid primary keys","No attribute in a primary key can contain a NULL value","Every row must have a unique combination of attributes across all columns","All tables must have exactly one primary key attribute"],
+ answer:1,explain:"Entity integrity requires that primary key attributes — or any part of a composite primary key — must NEVER be NULL. Since a primary key uniquely identifies a tuple, a NULL would make it impossible to distinguish one row from another."},
+
+{id:30,topic:"Unit 3 — Relational Model & SQL",q:"The relational algebra operation π<sub>Name,Age</sub>(Student) performs ___.",
+ options:["Selects rows where Name and Age meet a condition","Projects (extracts) only the Name and Age columns from Student, discarding all other columns","Joins Student with another relation on Name and Age","Counts students grouped by Name and Age"],
+ answer:1,explain:"Projection (π) is a unary operation that selects specific COLUMNS (attributes) from a relation and drops the rest. π<sub>Name,Age</sub>(Student) returns a relation containing only the Name and Age columns from the Student relation. Duplicate rows are eliminated automatically."},
+
+{id:31,topic:"Unit 3 — Relational Model & SQL",q:"The Set-Difference operation (R − S) in relational algebra returns ___.",
+ options:["Tuples appearing in both R and S","Tuples in R that do NOT appear in S","Tuples in S that do NOT appear in R","All tuples from both R and S combined"],
+ answer:1,explain:"Set-Difference returns only the tuples that are in R but NOT in S. Both R and S must be union-compatible (same schema). It is the RA equivalent of SQL's EXCEPT / MINUS operator. Example: AllStudents − EnrolledStudents gives unenrolled students."},
+
+{id:32,topic:"Unit 3 — Relational Model & SQL",q:"The Division operation (R ÷ S) in relational algebra is used to answer queries involving ___.",
+ options:["Simple projection of columns","'For all' (universal) type queries","Aggregate computations like COUNT and SUM","Set-union of two compatible relations"],
+ answer:1,explain:"Division (÷) answers queries of the form 'Find all X associated with ALL values of Y.' Example: Find students enrolled in ALL courses. R ÷ S returns tuples of R whose values in common attributes appear with ALL tuples of S. It represents universal quantification."},
+
+{id:33,topic:"Unit 3 — Relational Model & SQL",q:"A Natural Join (⋈) differs from a Cartesian Product (×) in that it ___.",
+ options:["Produces fewer columns by including only one copy of common attributes and only rows where common attributes match","Requires explicit condition specification","Returns all rows regardless of matching values","Is only applicable to relations with the same primary key"],
+ answer:0,explain:"Cartesian Product pairs every row of R with every row of S (no filtering). Natural Join additionally filters to keep only rows where ALL common attribute values match, and retains only one copy of each common attribute. Natural Join = Cartesian Product + Selection on common attrs + Projection to remove duplicates."},
+
+{id:34,topic:"Unit 3 — Relational Model & SQL",q:"A Semi-join (R ⋉ S) operation returns ___.",
+ options:["All attributes from both R and S where rows match","Only the tuples of R that have at least one matching tuple in S (only R's attributes appear)","All tuples from S that match a tuple in R","Tuples from R that have NO match in S"],
+ answer:1,explain:"Semi-join returns only rows of the LEFT relation (R) that have a matching row in S based on common attributes. Only R's attributes are included in the result. It is used in distributed databases to minimise data transfer — you only send relevant tuples."},
+
+{id:35,topic:"Unit 3 — Relational Model & SQL",q:"Referential integrity is violated when ___.",
+ options:["Two rows have identical primary keys","A foreign key value in a child table has no corresponding primary key value in the referenced parent table","An attribute contains a NULL value","A table has more columns than allowed by the schema"],
+ answer:1,explain:"Referential integrity ensures every foreign key value must correspond to an existing primary key value in the referenced (parent) table. If you insert a foreign key value that doesn't exist in the parent table — or delete a parent row that child rows reference — referential integrity is violated."},
+
+{id:36,topic:"Unit 3 — Relational Model & SQL",q:"Which SQL command eliminates all rows from a table instantly but PRESERVES the table structure?",
+ options:["DROP TABLE students;","DELETE FROM students;","TRUNCATE TABLE students;","REMOVE ALL FROM students;"],
+ answer:2,explain:"TRUNCATE TABLE removes ALL rows very efficiently (deallocates data pages), keeps the table structure (schema) intact, and resets AUTO_INCREMENT. DELETE FROM (without WHERE) also removes all rows but is logged row-by-row and can be rolled back in some DBMS. DROP TABLE removes both data AND structure."},
+
+{id:37,topic:"Unit 3 — Relational Model & SQL",q:"The HAVING clause in SQL differs from WHERE in that HAVING ___.",
+ options:["Filters rows before grouping based on individual row conditions","Filters groups AFTER GROUP BY, typically using aggregate function conditions","Sorts the result set in ascending order","Specifies which columns to include in the result"],
+ answer:1,explain:"WHERE filters INDIVIDUAL rows before they are grouped. HAVING filters GROUPS after GROUP BY has been applied, and can use aggregate functions in its condition. Example: HAVING COUNT(*) > 5 keeps only groups with more than 5 rows — something WHERE cannot do."},
+
+{id:38,topic:"Unit 3 — Relational Model & SQL",q:"What is a subquery in SQL?",
+ options:["A simplified version of a long query","A SELECT statement nested inside another SQL statement (SELECT, INSERT, UPDATE, or DELETE)","A query stored permanently as a database object","A query that runs on a subset of the database"],
+ answer:1,explain:"A subquery (nested query / inner query) is a complete SELECT statement embedded within another SQL statement. The outer query uses the result of the inner query. Subqueries can be used in WHERE, HAVING, FROM, and SELECT clauses."},
+
+{id:39,topic:"Unit 3 — Relational Model & SQL",q:"The INTERSECT operator in SQL returns ___.",
+ options:["All rows from both queries combined, without duplicates","Only rows that appear in the results of BOTH queries","Rows from the first query not found in the second","Rows from the second query not found in the first"],
+ answer:1,explain:"INTERSECT returns only those rows that are common to BOTH query result sets. Both queries must be union-compatible. Duplicates are automatically eliminated. It is the SQL equivalent of the set-intersection operation in relational algebra."},
+
+{id:40,topic:"Unit 3 — Relational Model & SQL",q:"An OUTER JOIN (specifically LEFT OUTER JOIN) returns ___.",
+ options:["Only rows with matching values in both tables","All rows from the LEFT table and only matching rows from the right; NULLs fill unmatched right-side columns","All rows from the RIGHT table and only matching rows from the left","All rows from both tables regardless of matches"],
+ answer:1,explain:"LEFT OUTER JOIN returns ALL rows from the left table plus the matching rows from the right table. Where there is no match, the right-side columns are filled with NULL. FULL OUTER JOIN returns all rows from both tables. RIGHT OUTER JOIN is the mirror of LEFT."},
+
+{id:41,topic:"Unit 3 — Relational Model & SQL",q:"A VIEW in SQL is ___.",
+ options:["A physical copy of a table stored separately on disk","A virtual relation defined by a stored SELECT query; it has no independent physical storage","An index that improves SELECT query speed","A stored procedure that returns a table"],
+ answer:1,explain:"A VIEW is a named, stored SELECT query that behaves like a virtual table. It has no physical storage of its own — when queried, the DBMS executes the underlying SELECT. Views provide data security (hiding columns), simplify complex queries, and present customised data to users."},
+
+{id:42,topic:"Unit 3 — Relational Model & SQL",q:"An INDEX in a database primarily serves to ___.",
+ options:["Enforce uniqueness constraints on columns","Speed up data retrieval (SELECT) operations by allowing fast row lookups without full table scans","Store backup copies of frequently accessed data","Automatically archive old records"],
+ answer:1,explain:"An index is a data structure (typically a B-tree) maintained separately from the table that allows the database engine to find rows matching a condition without scanning every row. This significantly speeds up SELECT queries. The tradeoff is additional storage and slower INSERT/UPDATE/DELETE operations."},
+
+{id:43,topic:"Unit 3 — Relational Model & SQL",q:"A SEQUENCE database object (common in Oracle and PostgreSQL) is used to ___.",
+ options:["Determine the execution order of SQL statements","Generate a series of unique sequential numeric values, typically for primary keys","Store ordered lists of strings","Define the sort order of a table"],
+ answer:1,explain:"A SEQUENCE is a database object that generates unique sequential integers independent of any table. It is typically used to populate AUTO_INCREMENT-style primary keys. Oracle syntax: CREATE SEQUENCE seq START WITH 1 INCREMENT BY 1; then use seq.NEXTVAL in INSERT statements."},
+
+{id:44,topic:"Unit 3 — Relational Model & SQL",q:"A DATABASE TRIGGER is ___.",
+ options:["A manual command executed by the DBA to start a transaction","A stored PL/SQL (or T-SQL) block that fires automatically in response to a DML event (INSERT, UPDATE, DELETE) on a table","An alert sent to users when data changes","A type of constraint that stops invalid data entry"],
+ answer:1,explain:"A trigger is automatically executed (fired) by the DBMS when a specified DML event occurs on a table or view. Triggers enforce complex business rules, maintain audit trails, synchronise tables, and perform cascading actions that cannot be expressed as simple constraints."},
+
+{id:45,topic:"Unit 3 — Relational Model & SQL",q:"The BETWEEN operator in SQL is used for ___.",
+ options:["String pattern matching using wildcards","Inclusive range searching — checking if a value falls within a lower and upper bound","Checking if a value is in a specified list","Testing for NULL values"],
+ answer:1,explain:"BETWEEN tests whether a value falls within a range (inclusive). WHERE salary BETWEEN 3000 AND 6000 is equivalent to WHERE salary >= 3000 AND salary <= 6000. Both boundary values are included. NOT BETWEEN excludes the range."},
+
+{id:46,topic:"Unit 3 — Relational Model & SQL",q:"What is the MINUS operator (or EXCEPT in standard SQL) used for?",
+ options:["Subtracting numeric column values","Returning rows from the FIRST query that are NOT present in the SECOND query's result","Returning rows common to both queries","Finding the absolute difference between two aggregates"],
+ answer:1,explain:"MINUS (Oracle) / EXCEPT (ANSI SQL) is the SQL implementation of set-difference. It returns rows from the first SELECT that do not appear in the second SELECT. Both queries must be union-compatible. Example: SELECT StudentID FROM Student MINUS SELECT StudentID FROM Enrolment — finds unenrolled students."},
+
+{id:47,topic:"Unit 3 — Relational Model & SQL",q:"A CURSOR in database programming is used to ___.",
+ options:["Navigate between database tables","Process a SELECT result set one row at a time within a procedural program (PL/SQL, T-SQL)","Display data on a graphical user interface","Speed up bulk INSERT operations"],
+ answer:1,explain:"A cursor provides a mechanism for row-by-row (record-by-record) processing of a multi-row SELECT result within procedural code. You DECLARE the cursor with a SELECT, OPEN it, repeatedly FETCH rows, process each row, then CLOSE it. Used in PL/SQL, T-SQL, and other procedural SQL extensions."},
+
+// ── UNIT 4: NORMALISATION (11) ─────────────
+{id:48,topic:"Unit 4 — Normalisation",q:"Normalisation is the process of ___.",
+ options:["Adding controlled redundancy to improve query performance","Organising relational tables to minimise redundancy and eliminate anomalies (insertion, update, deletion)","Encrypting sensitive database columns","Creating indexes on all table attributes"],
+ answer:1,explain:"Normalisation applies a series of rules (normal forms) to decompose tables, ensuring each piece of information is stored in only one place, dependencies are logical, and the database is free from insertion, update, and deletion anomalies."},
+
+{id:49,topic:"Unit 4 — Normalisation",q:"A relation is in First Normal Form (1NF) when ___.",
+ options:["It has no partial dependencies on a composite primary key","It has no transitive functional dependencies","All attribute values are atomic (single-valued, indivisible) and there are no repeating groups","It satisfies BCNF requirements"],
+ answer:2,explain:"1NF requires that every attribute contains only ATOMIC values — each cell holds a single, indivisible value. There must be no repeating groups (e.g., no lists or arrays stored in one column). The relation must also have a primary key."},
+
+{id:50,topic:"Unit 4 — Normalisation",q:"A relation is in Second Normal Form (2NF) when ___.",
+ options:["It is in 1NF and has no transitive dependencies","It is in 1NF and every non-key attribute is FULLY functionally dependent on the ENTIRE primary key (no partial dependencies)","All attributes are single-valued","It has no multivalued dependencies"],
+ answer:1,explain:"2NF eliminates partial dependencies — where a non-prime attribute depends on only PART of a composite primary key (not the whole key). 2NF is only relevant when the primary key is composite. A relation with a single-attribute primary key is automatically in 2NF if it is in 1NF."},
+
+{id:51,topic:"Unit 4 — Normalisation",q:"Third Normal Form (3NF) eliminates ___.",
+ options:["Partial dependencies","Multivalued dependencies","Join dependencies","Transitive dependencies (non-key attributes depending on other non-key attributes)"],
+ answer:3,explain:"3NF eliminates transitive dependencies. A transitive dependency occurs when a non-key attribute A determines another non-key attribute B (A → B). The definition: a relation is in 3NF if for every non-trivial FD X → Y, either X is a superkey OR Y is a prime attribute (part of some candidate key)."},
+
+{id:52,topic:"Unit 4 — Normalisation",q:"Boyce-Codd Normal Form (BCNF) is a stricter version of 3NF in that it requires ___.",
+ options:["For every non-trivial functional dependency X → Y, X must be a superkey (no exceptions even for prime attributes)","No attribute depends on another attribute","The relation to have only one candidate key","The relation to have no foreign keys"],
+ answer:0,explain:"BCNF requires: for every non-trivial FD X → Y, X MUST be a superkey. The difference from 3NF is that 3NF allows Y to be a prime attribute (exception), while BCNF does not. Every BCNF relation is in 3NF, but not every 3NF relation is in BCNF."},
+
+{id:53,topic:"Unit 4 — Normalisation",q:"Armstrong's Axioms for functional dependencies include which three foundational rules?",
+ options:["Commutativity, Associativity, Distributivity","Selection, Projection, Join","Reflexivity, Augmentation, Transitivity","Atomicity, Consistency, Isolation"],
+ answer:2,explain:"Armstrong's Axioms: (1) Reflexivity: if Y⊆X, then X→Y; (2) Augmentation: if X→Y, then XZ→YZ; (3) Transitivity: if X→Y and Y→Z, then X→Z. These three are SOUND (produce only valid FDs) and COMPLETE (can derive all valid FDs). They are the foundation of FD theory."},
+
+{id:54,topic:"Unit 4 — Normalisation",q:"A lossless-join decomposition guarantees that ___.",
+ options:["All functional dependencies are preserved after decomposition","When decomposed sub-relations are natural-joined back, the result is EXACTLY the original relation — no spurious tuples added","The decomposed tables are all in BCNF","No foreign keys appear in the decomposed tables"],
+ answer:1,explain:"Lossless-join (non-additive join) decomposition ensures that joining the decomposed tables produces exactly the original relation — no extra (spurious) tuples are introduced. This is tested using the FD-based condition: for a binary decomposition {R1, R2}, R1∩R2 → R1 or R1∩R2 → R2 must hold."},
+
+{id:55,topic:"Unit 4 — Normalisation",q:"Fourth Normal Form (4NF) addresses ___.",
+ options:["Transitive dependencies","Partial dependencies","Join dependencies","Multivalued dependencies (MVD)"],
+ answer:3,explain:"4NF requires a relation to be in BCNF AND have no non-trivial multivalued dependencies. An MVD X →→ Y exists when, for a given X value, there is a set of Y values independent of all other attributes. MVDs cause redundancy even in BCNF relations."},
+
+{id:56,topic:"Unit 4 — Normalisation",q:"Fifth Normal Form (5NF) deals with ___.",
+ options:["Multivalued dependencies","Transitive dependencies","Join dependencies — ensuring the relation cannot be decomposed into smaller projections without loss","Partial dependencies on composite keys"],
+ answer:2,explain:"5NF (also called Project-Join Normal Form / PJNF) handles join dependencies. A relation has a join dependency if it can be reconstructed from its projections. 5NF eliminates redundancy caused by join dependencies that are not implied by candidate keys."},
+
+{id:57,topic:"Unit 4 — Normalisation",q:"The concept of 'Universal Relation' in database design refers to ___.",
+ options:["A relation that can be accessed by all users simultaneously","A single hypothetical relation containing ALL attributes of the entire database schema","A relation that satisfies all normal forms simultaneously","A relation that links all tables through foreign keys"],
+ answer:1,explain:"The Universal Relation is a theoretical construct — a single enormous relation containing every attribute in the database. Normalisation theory begins with this concept and systematically decomposes it into well-structured smaller relations through functional dependency analysis."},
+
+{id:58,topic:"Unit 4 — Normalisation",q:"A non-prime attribute is one that ___.",
+ options:["Has no domain constraint","Is NOT a member of ANY candidate key of the relation","Is derived from other attributes","Is always a foreign key"],
+ answer:1,explain:"A prime attribute is one that belongs to at least one candidate key. A non-prime attribute (also called non-key attribute) is one that does NOT belong to any candidate key. Normalisation rules (2NF, 3NF) specifically govern how non-prime attributes must depend on keys."},
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let pool = [], currentTopic = "All", idx = 0, answers = {}, chosen = null, confirmed = false;
+const TOPICS = [...new Set(QUESTIONS.map(q => q.topic))];
+
+// ═══════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){ show('home'); }
+
+function toggleSolution(id, btn) {
+  const box = document.getElementById(id);
+  const open = box.classList.toggle('open');
+  box.style.display = open ? 'block' : 'none';
+  btn.textContent = open ? '▲ Hide Solution' : '🔍 Reveal ' + (id === 'er-solution' ? 'ER Diagram Solution' : 'Relational Algebra Answers');
+}
+
+// ═══════════════════════════════════════════
+//  HOME
+// ═══════════════════════════════════════════
+function buildHome() {
+  const list = document.getElementById('topic-list');
+  const all = document.createElement('button');
+  all.className = 'topic-card';
+  all.style.borderColor = 'rgba(255,255,255,.2)';
+  all.innerHTML = `<span class="tc-name">🗂  Full Exam — All 58 MCQs</span><span class="tc-count" style="color:#fff;">58 Qs →</span>`;
+  all.onclick = () => startQuiz("All");
+  list.appendChild(all);
+
+  TOPICS.forEach(t => {
+    const c = TC[t];
+    const n = QUESTIONS.filter(q => q.topic === t).length;
+    const btn = document.createElement('button');
+    btn.className = 'topic-card';
+    btn.style.borderColor = c.accent + '30';
+    btn.innerHTML = `<span class="tc-name">${t}</span><span class="tc-count" style="color:${c.accent};">${n} Qs →</span>`;
+    btn.onclick = () => startQuiz(t);
+    list.appendChild(btn);
+  });
+
+  // Practicals card
+  const pCard = document.createElement('button');
+  pCard.className = 'topic-card';
+  pCard.style.borderColor = '#e040fb44';
+  pCard.innerHTML = `<span class="tc-name">📐  Practical Questions (ER Diagram + Relational Algebra)</span><span class="tc-count" style="color:#e040fb;">2 Qs →</span>`;
+  pCard.onclick = () => show('practical');
+  list.appendChild(pCard);
+}
+
+// ═══════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════
+function startQuiz(filter) {
+  currentTopic = filter;
+  pool = filter === "All" ? [...QUESTIONS] : QUESTIONS.filter(q => q.topic === filter);
+  idx = 0; answers = {}; chosen = null; confirmed = false;
+  renderQuestion();
+  show('quiz');
+}
+
+function renderQuestion() {
+  const q = pool[idx];
+  const c = TC[q.topic];
+  const fill = document.getElementById('progress-fill');
+  fill.style.width = (idx / pool.length * 100) + '%';
+  fill.style.background = c.accent;
+  document.getElementById('q-counter').textContent = (idx+1) + ' / ' + pool.length;
+  const chip = document.getElementById('q-chip');
+  chip.textContent = q.topic;
+  chip.style.background = c.badge;
+  chip.style.color = c.accent;
+  document.getElementById('unit-label').textContent = '';
+  document.getElementById('q-text').innerHTML = 'Q' + q.id + '. ' + q.q;
+  const oc = document.getElementById('options-container');
+  oc.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    if(!opt) return;
+    const div = document.createElement('div');
+    div.className = 'opt';
+    div.id = 'opt-' + i;
+    div.innerHTML = `<span class="key">${String.fromCharCode(65+i)}.</span><span class="txt">${opt}</span><span class="icon" id="icon-${i}"></span>`;
+    div.onclick = () => selectOpt(i);
+    oc.appendChild(div);
+  });
+  document.getElementById('explain-box').style.display = 'none';
+  document.getElementById('explain-box').innerHTML = '';
+  const cb = document.getElementById('confirm-btn');
+  const nb = document.getElementById('next-btn');
+  cb.style.display = 'block';
+  cb.style.background = '#111f2a';
+  cb.style.color = '#2a4a5a';
+  nb.style.display = 'none';
+  chosen = null; confirmed = false;
+}
+
+function selectOpt(i) {
+  if (confirmed) return;
+  chosen = i;
+  const q = pool[idx];
+  const c = TC[q.topic];
+  document.querySelectorAll('.opt').forEach((el, j) => {
+    el.style.borderColor = '#192c38';
+    el.style.background = '#0b1c27';
+    el.style.color = '#aac8d5';
+  });
+  const el = document.getElementById('opt-' + i);
+  el.style.borderColor = c.accent;
+  el.style.background = 'rgba(' + hexRGB(c.accent) + ',.07)';
+  el.style.color = c.accent;
+  const cb = document.getElementById('confirm-btn');
+  cb.style.background = c.accent;
+  cb.style.color = '#07121a';
+}
+
+function confirmAnswer() {
+  if (chosen === null) return;
+  confirmed = true;
+  const q = pool[idx];
+  const c = TC[q.topic];
+  answers[q.id] = chosen;
+  document.querySelectorAll('.opt').forEach((el, i) => {
+    el.onclick = null;
+    el.style.transform = 'none';
+    if (i === q.answer) {
+      el.style.borderColor = '#a8ff3e'; el.style.background = 'rgba(168,255,62,.07)'; el.style.color = '#a8ff3e';
+      document.getElementById('icon-' + i).textContent = '✓';
+    } else if (i === chosen && i !== q.answer) {
+      el.style.borderColor = '#ff3838'; el.style.background = 'rgba(255,56,56,.06)'; el.style.color = '#ff7070';
+      document.getElementById('icon-' + i).textContent = '✗';
+    } else {
+      el.style.borderColor = '#192c38'; el.style.background = '#0b1c27'; el.style.color = '#3a5a68';
+    }
+  });
+  const isRight = chosen === q.answer;
+  const eb = document.getElementById('explain-box');
+  eb.style.display = 'block';
+  eb.className = 'explain slide';
+  eb.style.background = isRight ? '#09200f' : '#1c0909';
+  eb.style.border = '1.5px solid ' + (isRight ? 'rgba(168,255,62,.27)' : 'rgba(255,56,56,.27)');
+  eb.innerHTML = `
+    <div class="ex-head">
+      <span style="font-size:1.2rem">${isRight ? '🎯' : '📖'}</span>
+      <div>
+        <div class="ex-title" style="color:${isRight?'#a8ff3e':'#ff7070'}">${isRight ? 'Correct!' : 'Incorrect'}</div>
+        ${!isRight ? `<div class="correct-ans">✓ Correct: <strong>${q.options[q.answer]}</strong></div>` : ''}
+      </div>
+    </div>
+    <p style="border-left-color:${isRight?'rgba(168,255,62,.4)':'rgba(255,56,56,.4)'}">${q.explain}</p>`;
+  document.getElementById('confirm-btn').style.display = 'none';
+  const nb = document.getElementById('next-btn');
+  nb.style.display = 'block';
+  nb.style.background = c.accent;
+  nb.style.color = '#07121a';
+  nb.textContent = idx + 1 < pool.length ? 'Next Question →' : 'View Full Results →';
+}
+
+function nextQuestion() {
+  if (idx + 1 < pool.length) { idx++; renderQuestion(); }
+  else showResults();
+}
+
+// ═══════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════
+function showResults() {
+  const score  = pool.filter(q => answers[q.id] === q.answer).length;
+  const pct    = pool.length ? Math.round(score / pool.length * 100) : 0;
+  const grade  = getGrade(pct);
+  const missed = pool.filter(q => answers[q.id] !== undefined && answers[q.id] !== q.answer);
+  const el     = id => document.getElementById(id);
+
+  el('score-pct').textContent = pct + '%';
+  el('score-pct').style.color = grade.color;
+  el('grade-label').textContent = grade.emoji + ' ' + grade.label;
+  el('grade-label').style.color = grade.color;
+  el('score-sub').textContent = score + ' correct · ' + missed.length + ' missed · ' + pool.length + ' total MCQs';
+  el('grade-note').textContent = grade.note;
+
+  const stats = buildStats();
+  const ts = el('topic-stats');
+  ts.innerHTML = '';
+  stats.forEach(({ topic, correct, total, pct:tp }) => {
+    const acc = TC[topic].accent;
+    const st  = tp>=80?'Strong':tp>=60?'Decent':'Needs Work';
+    const sc  = tp>=80?'#a8ff3e':tp>=60?'#ffca28':'#ff6b35';
+    ts.innerHTML += `<div class="stat-card" style="border:1px solid ${acc}1e;">
+      <div class="stat-row">
+        <span style="font-size:.87rem;color:#c0d8e2;">${topic}</span>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span class="mono" style="font-size:.7rem;color:${sc};">${st}</span>
+          <span class="mono" style="color:${acc};font-size:.79rem;">${correct}/${total} · ${tp}%</span>
+        </div>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:${tp}%;background:${acc};"></div></div>
+    </div>`;
+  });
+
+  const weak = stats.filter(t => t.pct < 60);
+  el('improve-section').innerHTML = weak.length ? `<div class="improve-box">
+    <div class="label" style="color:#ff6b35;margin-bottom:16px;">📌 IMPROVEMENT PLAN</div>
+    ${weak.map(({ topic, pct:tp }) => `<div class="improve-item">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-weight:700;color:#ff8855;font-size:.89rem;">${topic}</span>
+        <span class="mono" style="font-size:.74rem;color:#ff6b35;">${tp}% scored</span>
+      </div>
+      <div class="improve-tip">${TIPS[topic]}</div>
+    </div>`).join('')}
+  </div>` : '';
+
+  const strong = stats.filter(t => t.pct >= 80);
+  el('strong-section').innerHTML = strong.length ? `<div class="strong-box">
+    <div class="label" style="color:#a8ff3e;margin-bottom:12px;">🏆 STRONG AREAS</div>
+    ${strong.map(({ topic, correct, total, pct:tp }) => `<div class="strong-row">
+      <span style="color:#a8ff3e;">${topic}</span>
+      <span class="mono" style="color:#5a9a3a;">${correct}/${total} · ${tp}%</span>
+    </div>`).join('')}
+  </div>` : '';
+
+  const ml = el('missed-list');
+  const mt = el('missed-title');
+  const pb = el('perfect-box');
+  if (missed.length) {
+    pb.style.display = 'none';
+    mt.textContent = '🔍 MISSED QUESTIONS — FULL REVIEW (' + missed.length + ')';
+    ml.innerHTML = '';
+    missed.forEach(q => {
+      const acc = TC[q.topic].accent;
+      const d = document.createElement('details');
+      d.className = 'missed-item';
+      d.innerHTML = `
+        <summary style="padding:13px 18px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between;cursor:pointer;font-size:.87rem;color:#b0cad5;line-height:1.5;list-style:none;">
+          <span style="flex:1;line-height:1.5;"><span class="mono" style="font-size:.67rem;color:${acc};margin-right:8px;">Q${q.id}</span>${q.q}</span>
+          <span style="color:#3a6a7a;font-size:.76rem;white-space:nowrap;padding-top:2px;">tap ▾</span>
+        </summary>
+        <div class="missed-body">
+          <div class="mono" style="font-size:.71rem;color:#ff7070;margin:12px 0 4px;">✗ Your answer:&nbsp;&nbsp; ${q.options[answers[q.id]]??'—'}</div>
+          <div class="mono" style="font-size:.71rem;color:#a8ff3e;margin-bottom:4px;">✓ Correct answer: ${q.options[q.answer]}</div>
+          <div class="missed-explain" style="border-left-color:${acc}55;">${q.explain}</div>
+        </div>`;
+      ml.appendChild(d);
+    });
+  } else { mt.textContent = ''; ml.innerHTML = ''; pb.style.display = 'block'; }
+
+  const w0 = weak[0];
+  el('result-buttons').innerHTML = `
+    <button class="btn btn-primary" onclick="startQuiz('${currentTopic}')">🔄 Retry This Quiz</button>
+    ${w0 ? `<button class="btn btn-danger" onclick="startQuiz('${w0.topic}')">📚 Practice Weakest: ${w0.topic.replace(/['"]/g,'')}</button>` : ''}
+    <button class="btn btn-purple" onclick="show('practical')">📐 View Practical Questions (Q59 & Q60)</button>
+    <button class="btn btn-green" onclick="startQuiz('All')">📝 Take Full 58-Question Exam</button>
+    <button class="btn btn-outline" onclick="goHome()">← Home</button>`;
+
+  show('result');
+}
+
+function buildStats() {
+  return TOPICS.map(t => {
+    const tqs = pool.filter(q => q.topic === t);
+    if (!tqs.length) return null;
+    const correct = tqs.filter(q => answers[q.id] === q.answer).length;
+    return { topic:t, correct, total:tqs.length, pct:Math.round(correct/tqs.length*100) };
+  }).filter(Boolean);
+}
+
+function getGrade(pct) {
+  if (pct>=90) return { label:"A — Distinction", color:"#a8ff3e", emoji:"🏆", note:"Outstanding mastery. Excellent exam readiness." };
+  if (pct>=75) return { label:"B — Credit",      color:"#00e5ff", emoji:"🎯", note:"Very solid performance. Polish the weaker spots." };
+  if (pct>=60) return { label:"C — Pass",        color:"#ffca28", emoji:"📚", note:"Satisfactory. Focused revision will push you higher." };
+  if (pct>=45) return { label:"D — Borderline",  color:"#ff6b35", emoji:"⚠️",  note:"More revision needed. Work through each topic." };
+  return         { label:"F — Fail",             color:"#ff3a3a", emoji:"💪", note:"Significant gaps. Rebuild from fundamentals." };
+}
+
+function hexRGB(hex) {
+  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r ? `${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}` : '0,0,0';
+}
+
+buildHome();
+</script>
+</body>
+</html>
